@@ -1,4 +1,4 @@
 TeaTron
 =======
 
-Making Tron in GridWorld
+Making 4 player Tron by extending GridWorld functionality
