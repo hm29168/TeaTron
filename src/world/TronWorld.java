@@ -13,8 +13,9 @@ import info.gridworld.grid.Location;
 public class TronWorld extends ActorWorld{
 	
 	public static void main(String[] args){
-		ActorWorld world = new TronWorld(50, 50);
+		ActorWorld world = new TronWorld(10, 10);
 		world.add(new Location( 1, 1), new Bike());
+		world.add(new Location(1, 2), new Trail());
 		world.show();
 	}
 	
