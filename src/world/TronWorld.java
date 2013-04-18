@@ -9,18 +9,19 @@ import info.gridworld.actor.ActorWorld;
 import info.gridworld.grid.BoundedGrid;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
+import info.gridworld.world.World;
 
-public class TronWorld extends ActorWorld{
+public class TronWorld extends World<CustomActor>{
 	
 	public static void main(String[] args){
-		ActorWorld world = new TronWorld(10, 10);
-		world.add(new Location( 1, 1), new Bike());
+		TronWorld world = new TronWorld(10, 10);
+		world.add(new Location(1, 1), new Bike());
 		world.add(new Location(1, 2), new Trail());
 		world.show();
 	}
 	
 	TronWorld(int width, int height){
-		super(new BoundedGrid<Actor>(width, height));
+		super(new BoundedGrid<CustomActor>(width, height));
 	}
 	
 	public void show()
@@ -30,17 +31,18 @@ public class TronWorld extends ActorWorld{
 
     public void step()
     {
-        Grid<Actor> gr = getGrid();
-        ArrayList<Actor> actors = new ArrayList<Actor>();
+        Grid<CustomActor> gr = getGrid();
+        ArrayList<CustomActor> actors = new ArrayList<CustomActor>();
         for (Location loc : gr.getOccupiedLocations())
             actors.add(gr.get(loc));
 
-        for (Actor a : actors)
+        for (CustomActor a : actors)
         {
             // only act if another actor hasn't removed a
         	//also handle the trail-making here and anything else game-side
-            if (a.getGrid() == gr)
+            if (a.getGrid() == gr){
                 a.act();
+            }
         }
     }
 
@@ -49,7 +51,7 @@ public class TronWorld extends ActorWorld{
      * @param loc the location at which to add the actor
      * @param occupant the actor to add
      */
-    public void add(Location loc, Actor occupant)
+    public void add(Location loc, CustomActor occupant)
     {
         occupant.putSelfInGrid(getGrid(), loc);
     }
@@ -58,7 +60,7 @@ public class TronWorld extends ActorWorld{
      * Adds an occupant at a random empty location.
      * @param occupant the occupant to add
      */
-    public void add(Actor occupant)
+    public void add(CustomActor occupant)
     {
         Location loc = getRandomEmptyLocation();
         if (loc != null)
@@ -71,9 +73,9 @@ public class TronWorld extends ActorWorld{
      * @return the removed actor, or null if there was no actor at the given
      * location.
      */
-    public Actor remove(Location loc)
+    public CustomActor remove(Location loc)
     {
-        Actor occupant = getGrid().get(loc);
+        CustomActor occupant = getGrid().get(loc);
         if (occupant == null)
             return null;
         occupant.removeSelfFromGrid();

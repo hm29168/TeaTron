@@ -3,7 +3,7 @@ import java.awt.Color;
 
 import info.gridworld.actor.Actor;
 
-public class Trail extends Actor{
+public class Trail extends CustomActor{
 	public Trail(){
 		super();
 		setColor(Color.BLUE); //ideally we will make this player's color
