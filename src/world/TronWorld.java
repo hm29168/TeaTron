@@ -15,7 +15,7 @@ public class TronWorld extends World<CustomActor>{
 	
 	public static void main(String[] args){
 		TronWorld world = new TronWorld(10, 10);
-		world.add(new Location(1, 1), new Bike());
+		world.add(new Location(1, 1), new SimpleBike("Test"));
 		world.add(new Location(1, 2), new Trail());
 		world.show();
 	}

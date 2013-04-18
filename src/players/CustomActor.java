@@ -12,10 +12,10 @@ import java.awt.Color;
  */
 public class CustomActor
 {
-    protected Grid<CustomActor> grid;
-    protected Location location;
-    protected int direction;
-    protected Color color;
+    private Grid<CustomActor> grid;
+    private Location location;
+    private int direction;
+    private Color color;
 
     /**
      * Constructs a blue actor that is facing north.
@@ -41,7 +41,7 @@ public class CustomActor
      * Sets the color of this actor.
      * @param newColor the new color
      */
-    public void setColor(Color newColor)
+    public final void setColor(Color newColor)
     {
         color = newColor;
     }
@@ -50,7 +50,7 @@ public class CustomActor
      * Gets the current direction of this actor.
      * @return the direction of this actor, an angle between 0 and 359 degrees
      */
-    public int getDirection()
+    public final int getDirection()
     {
         return direction;
     }
@@ -61,7 +61,7 @@ public class CustomActor
      * to the angle between 0 and 359 degrees that is equivalent to
      * <code>newDirection</code>.
      */
-    public void setDirection(int newDirection)
+    public final void setDirection(int newDirection)
     {
         direction = newDirection % Location.FULL_CIRCLE;
         if (direction < 0)
@@ -73,7 +73,7 @@ public class CustomActor
      * @return the grid of this actor, or <code>null</code> if this actor is
      * not contained in a grid
      */
-    public Grid<CustomActor> getGrid()
+    public final Grid<CustomActor> getGrid()
     {
         return grid;
     }
@@ -83,9 +83,13 @@ public class CustomActor
      * @return the location of this actor, or <code>null</code> if this actor is
      * not contained in a grid
      */
-    public Location getLocation()
+    public final Location getLocation()
     {
         return location;
+    }
+    
+    public final void setLocation(Location location){
+    	this.location = location;
     }
 
     /**
@@ -96,7 +100,7 @@ public class CustomActor
      * @param gr the grid into which this actor should be placed
      * @param loc the location into which the actor should be placed
      */
-    public void putSelfInGrid(Grid<CustomActor> gr, Location loc)
+    public final void putSelfInGrid(Grid<CustomActor> gr, Location loc)
     {
         if (grid != null)
             throw new IllegalStateException(
@@ -114,7 +118,7 @@ public class CustomActor
      * Removes this actor from its grid. <br />
      * Precondition: This actor is contained in a grid
      */
-    public void removeSelfFromGrid()
+    public final void removeSelfFromGrid()
     {
         if (grid == null)
             throw new IllegalStateException(
@@ -136,7 +140,7 @@ public class CustomActor
      * <code>newLocation</code> is valid in the grid of this actor
      * @param newLocation the new location
      */
-    public void moveTo(Location newLocation)
+    private void moveTo(Location newLocation)
     {
         if (grid == null)
             throw new IllegalStateException("This actor is not in a grid.");
