@@ -1,5 +1,8 @@
 package players;
 
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+
 public class SimpleBike extends Bike{
 	public SimpleBike(){
 		super();
@@ -10,8 +13,15 @@ public class SimpleBike extends Bike{
 	}
 
 	@Override
-	public int move() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int move(){
+		int dir = getDirection();
+		Location location = getLocation();
+		Location newLocation = location.getAdjacentLocation(dir);
+		Grid<CustomActor> grid = getGrid();
+		if (!grid.isValid(newLocation)){
+			setDirection(dir + 90);
+			return move();
+		}
+		return dir;
 	}
 }

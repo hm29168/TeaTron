@@ -1,5 +1,4 @@
 package players;
-import info.gridworld.actor.Actor;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
@@ -16,14 +15,10 @@ public abstract class Bike extends CustomActor{
 	
 	//override this function for movement
 	public abstract int move();
-	
-	//random movement of turning 90 degrees (boxbug)
 	public final void act(){
 		setDirection(move());
-		int dir = getDirection();
-		
-		Location newLoc = getLocation().getAdjacentLocation(dir);
-		moveTo(newLoc);
+		Location location = getLocation();
+		moveTo(location.getAdjacentLocation(getDirection()));
 	}
 	
 	private final void moveTo(Location newLocation)
@@ -66,8 +61,10 @@ public abstract class Bike extends CustomActor{
         	grid.remove(location);
 	        setLocation(newLocation);
 	        grid.put(newLocation, this);
+	        grid.put(location, new Trail());
         }
     }
+
 	
 	private final void crash(){
 		removeSelfFromGrid(); //call this instead of using grid.remove(location);
