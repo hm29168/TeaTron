@@ -1,15 +1,17 @@
 package players;
 
+import world.TronGrid;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
 public class SimpleBike extends Bike{
-	public SimpleBike(){
-		super();
+	public SimpleBike(TronGrid<CustomActor> gr){
+		this(gr, "Some Bike");
 	}
 	
-	public SimpleBike(String name){
-		super(name);
+	public SimpleBike(TronGrid<CustomActor> gr, String name){
+		super(gr);
+		this.name = name;
 	}
 
 	@Override

@@ -13,15 +13,8 @@ import info.gridworld.world.World;
 
 public class TronWorld extends World<CustomActor>{
 	
-	public static void main(String[] args){
-		TronWorld world = new TronWorld(10, 10);
-		world.add(new Location(1, 1), new SimpleBike("Test"));
-		world.add(new Location(1, 2), new Trail());
-		world.show();
-	}
-	
 	TronWorld(int width, int height){
-		super(new BoundedGrid<CustomActor>(width, height));
+		super(new TronGrid<CustomActor>(width, height));
 	}
 	
 	public void show()
@@ -40,10 +33,57 @@ public class TronWorld extends World<CustomActor>{
         {
             // only act if another actor hasn't removed a
         	//also handle the trail-making here and anything else game-side
-            if (a.getGrid() == gr){
-                a.act();
+            if (a.getGrid() == gr && a.getLocation() != null){
+            	if (a instanceof Bike){
+            		Bike thisBike = (Bike)a;
+            		moveBike(thisBike);
+            	}
             }
         }
+    }
+    
+    public TronGrid<CustomActor> getGrid(){
+    	return (TronGrid<CustomActor>) super.getGrid();
+    }
+    
+    public void moveBike(Bike b){
+    	TronGrid<CustomActor> grid = getGrid();
+    	Location location = grid.getLocation(b);
+    	int newDirection = b.move();
+    	b.setDirection(newDirection);
+    	Location newLocation = location.getAdjacentLocation(newDirection);
+    	
+        if (!grid.isValid(newLocation)){
+            throw new IllegalArgumentException("Location " + newLocation
+                    + " is not valid.");
+        }
+
+        //okay for now, but let's throw an error (you always are going to move)
+        if (newLocation.equals(location)){
+            return;
+        }
+        
+        CustomActor other = grid.get(newLocation);
+        
+        //crash boom
+        if (other != null){
+        	if (other instanceof Bike){
+        		Bike otherBike = (Bike)other;
+        		crashBike(otherBike);
+        	}
+        	crashBike(b);
+        }
+        else {
+        	//use grid.remove(location) only when you are moving, not when actually pulling the Actor from the Grid
+        	grid.remove(location);
+	        grid.put(newLocation, b);
+	        grid.put(location, new Trail(grid));
+        }
+    }
+    
+    public void crashBike(Bike b){
+    	getGrid().remove(b.getLocation());
+    	System.out.println(b + " has crashed.");
     }
 
     /**
@@ -53,7 +93,9 @@ public class TronWorld extends World<CustomActor>{
      */
     public void add(Location loc, CustomActor occupant)
     {
-        occupant.putSelfInGrid(getGrid(), loc);
+        TronGrid<CustomActor> grid = getGrid();
+        grid.remove(loc);
+        grid.put(loc, occupant);
     }
 
     /**
@@ -78,7 +120,7 @@ public class TronWorld extends World<CustomActor>{
         CustomActor occupant = getGrid().get(loc);
         if (occupant == null)
             return null;
-        occupant.removeSelfFromGrid();
+        getGrid().remove(loc);
         return occupant;
     }
 }

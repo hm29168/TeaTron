@@ -5,27 +5,27 @@ import info.gridworld.grid.Location;
 
 import java.awt.Color;
 
+import world.TronGrid;
+
 /**
  * An <code>Actor</code> is an entity with a color and direction that can act.
  * <br />
  * The API of this class is testable on the AP CS A and AB exams.
  */
-public class CustomActor
+public abstract class CustomActor
 {
-    private Grid<CustomActor> grid;
-    private Location location;
+    private TronGrid<CustomActor> grid;
     private int direction;
     private Color color;
 
     /**
      * Constructs a blue actor that is facing north.
      */
-    public CustomActor()
+    public CustomActor(TronGrid<CustomActor> gr)
     {
         color = Color.BLUE;
         direction = Location.NORTH;
-        grid = null;
-        location = null;
+        grid = gr;
     }
 
     /**
@@ -85,91 +85,12 @@ public class CustomActor
      */
     public final Location getLocation()
     {
-        return location;
+        return grid.getLocation(this);
     }
     
-    public final void setLocation(Location location){
-    	this.location = location;
-    }
-
-    /**
-     * Puts this actor into a grid. If there is another actor at the given
-     * location, it is removed. <br />
-     * Precondition: (1) This actor is not contained in a grid (2)
-     * <code>loc</code> is valid in <code>gr</code>
-     * @param gr the grid into which this actor should be placed
-     * @param loc the location into which the actor should be placed
-     */
-    public final void putSelfInGrid(Grid<CustomActor> gr, Location loc)
-    {
-        if (grid != null)
-            throw new IllegalStateException(
-                    "This actor is already contained in a grid.");
-
-        CustomActor actor = gr.get(loc);
-        if (actor != null)
-            actor.removeSelfFromGrid();
-        gr.put(loc, this);
-        grid = gr;
-        location = loc;
-    }
-
-    /**
-     * Removes this actor from its grid. <br />
-     * Precondition: This actor is contained in a grid
-     */
-    public final void removeSelfFromGrid()
-    {
-        if (grid == null)
-            throw new IllegalStateException(
-                    "This actor is not contained in a grid.");
-        if (grid.get(location) != this)
-            throw new IllegalStateException(
-                    "The grid contains a different actor at location "
-                            + location + ".");
-
-        grid.remove(location);
-        grid = null;
-        location = null;
-    }
-
-    /**
-     * Moves this actor to a new location. If there is another actor at the
-     * given location, it is removed. <br />
-     * Precondition: (1) This actor is contained in a grid (2)
-     * <code>newLocation</code> is valid in the grid of this actor
-     * @param newLocation the new location
-     */
-    private void moveTo(Location newLocation)
-    {
-        if (grid == null)
-            throw new IllegalStateException("This actor is not in a grid.");
-        if (grid.get(location) != this)
-            throw new IllegalStateException(
-                    "The grid contains a different actor at location "
-                            + location + ".");
-        if (!grid.isValid(newLocation))
-            throw new IllegalArgumentException("Location " + newLocation
-                    + " is not valid.");
-
-        if (newLocation.equals(location))
-            return;
-        grid.remove(location);
-        CustomActor other = grid.get(newLocation);
-        if (other != null)
-            other.removeSelfFromGrid();
-        location = newLocation;
-        grid.put(location, this);
-    }
-
-    /**
-     * Reverses the direction of this actor. Override this method in subclasses
-     * of <code>Actor</code> to define types of actors with different behavior
-     * 
-     */
-    public void act()
-    {
-        setDirection(getDirection() + Location.HALF_CIRCLE);
+    protected final void removeSelfFromGrid(){
+    	grid.remove(getLocation());
+    	this.grid = null;
     }
 
     /**
@@ -178,7 +99,7 @@ public class CustomActor
      */
     public String toString()
     {
-        return getClass().getName() + "[location=" + location + ",direction="
+        return getClass().getName() + "[location=" + getLocation() + ",direction="
                 + direction + ",color=" + color + "]";
     }
 }
