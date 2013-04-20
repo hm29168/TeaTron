@@ -5,6 +5,7 @@ import info.gridworld.grid.Location;
 
 public abstract class Bike extends CustomActor{
 	String name;
+	
 	public Bike(TronGrid<CustomActor> gr){
 		this(gr, "Some Bike");
 	}

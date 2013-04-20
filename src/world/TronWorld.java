@@ -4,9 +4,6 @@ import java.util.ArrayList;
 
 import players.*;
 
-import info.gridworld.actor.Actor;
-import info.gridworld.actor.ActorWorld;
-import info.gridworld.grid.BoundedGrid;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 import info.gridworld.world.World;
@@ -17,20 +14,18 @@ public class TronWorld extends World<CustomActor>{
 		super(new TronGrid<CustomActor>(width, height));
 	}
 	
-	public void show()
-    {
-        super.show();
-    }
+    //Need this function so don't have to cast everytime
+    public TronGrid<CustomActor> getGrid(){
+    	return (TronGrid<CustomActor>) super.getGrid();
+    }	
 
-    public void step()
-    {
+    public void step() {
         Grid<CustomActor> gr = getGrid();
         ArrayList<CustomActor> actors = new ArrayList<CustomActor>();
         for (Location loc : gr.getOccupiedLocations())
             actors.add(gr.get(loc));
 
-        for (CustomActor a : actors)
-        {
+        for (CustomActor a : actors) {
             // only act if another actor hasn't removed a
         	//also handle the trail-making here and anything else game-side
             if (a.getGrid() == gr && a.getLocation() != null){
@@ -40,10 +35,6 @@ public class TronWorld extends World<CustomActor>{
             	}
             }
         }
-    }
-    
-    public TronGrid<CustomActor> getGrid(){
-    	return (TronGrid<CustomActor>) super.getGrid();
     }
     
     public void moveBike(Bike b){

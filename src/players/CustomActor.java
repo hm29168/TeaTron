@@ -8,9 +8,11 @@ import java.awt.Color;
 import world.TronGrid;
 
 /**
- * An <code>Actor</code> is an entity with a color and direction that can act.
- * <br />
- * The API of this class is testable on the AP CS A and AB exams.
+ * Our version of Grid World's Actor class
+ * Most notably, it removes location controls and gives it to our TronGrid
+ * 
+ * NOTE THAT YOU STILL NEED TO STUDY THE NORMAL GRIDWORLD API INSTEAD OF OUR HACKED ONE
+ *
  */
 public abstract class CustomActor
 {
