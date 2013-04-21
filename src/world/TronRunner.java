@@ -1,10 +1,15 @@
 package world;
 
+import java.awt.Color;
+
 import info.gridworld.grid.Location;
 import players.Bike;
 import players.SimpleBike;
 
 public class TronRunner {
+	
+	static boolean RANDOM_POSITION = false;
+	
 	public static void main(String[] args){
 		TronWorld world = new TronWorld(10, 10); //Eventually should be much bigger
 		
@@ -17,23 +22,33 @@ public class TronRunner {
 		//direction is in bearings, wtf. get used to it.
 		//weird thing. they don't all crash at the same time. wat. timing issues? 
 		//or maybe another Bike is crashing before it can crash another. how to deal?
-		Bike a = new SimpleBike(world.getGrid(), "Jabari");
-		a.setDirection(0);
-		Bike b = new SimpleBike(world.getGrid(), "Lilly");
-		b.setDirection(90);
-		Bike c = new SimpleBike(world.getGrid(), "Josh");
-		c.setDirection(180);
-		Bike d = new SimpleBike(world.getGrid(), "Sam");
-		d.setDirection(270);
+
+		Bike a = new SimpleBike(world.getGrid(), "Jabari",Color.RED);
+		Bike b = new SimpleBike(world.getGrid(), "Lilly", Color.YELLOW);
+		Bike c = new SimpleBike(world.getGrid(), "Josh", Color.GREEN);
+		Bike d = new SimpleBike(world.getGrid(), "Sam", Color.BLUE);
 		
-		//remember that Location is in the form of (row, col), not (x, y)!
-		int rows = world.getGrid().getNumRows();
-		int cols = world.getGrid().getNumCols();
-		world.add(new Location(rows - 1, 0), a);
-		world.add(new Location(0, 0), b);
-		world.add(new Location(0, cols - 1), c);
-		world.add(new Location(rows - 1, cols - 1), d);
-		
+		if(!RANDOM_POSITION) {
+			//NOTE!! IN THE COMPETITION, WE NEED TO MAKE THIS ORDERED LAYOUT PSEUDO-RANDOM TOO
+			//i.e. we can not have Bike A start out in the bottom right position everytime
+			a.setDirection(0);
+			b.setDirection(90);
+			c.setDirection(180);
+			d.setDirection(270);
+			
+			//remember that Location is in the form of (row, col), not (x, y)!
+			int rows = world.getGrid().getNumRows();
+			int cols = world.getGrid().getNumCols();
+			world.add(new Location(rows - 1, 0), a);
+			world.add(new Location(0, 0), b);
+			world.add(new Location(0, cols - 1), c);
+			world.add(new Location(rows - 1, cols - 1), d);
+		} else {
+			world.add(a);
+			world.add(b);
+			world.add(c);
+			world.add(d);
+		}
 		world.show();
 	}
 }

@@ -35,6 +35,9 @@ public class TronWorld extends World<CustomActor>{
         	if (a instanceof Bike){
         		moveBike((Bike) a);
         	}
+        	if(a instanceof Trail) {
+        		((Trail) a).act();
+        	}
         }
     }
     
@@ -45,14 +48,10 @@ public class TronWorld extends World<CustomActor>{
     	b.setDirection(newDirection);
     	Location newLocation = location.getAdjacentLocation(newDirection);
     	
-        if (!grid.isValid(newLocation)){
-            throw new IllegalArgumentException("Location " + newLocation
-                    + " is not valid.");
-        }
-
-        //okay for now, but let's throw an error (you always are going to move)
-        if (newLocation.equals(location)){
-            return;
+        if (!grid.isValid(newLocation) || newLocation.equals(location)){
+//            throw new IllegalArgumentException("Location " + newLocation
+//                    + " is not valid.");
+        	crashBike(b);
         }
         
         CustomActor other = grid.get(newLocation);
@@ -68,7 +67,7 @@ public class TronWorld extends World<CustomActor>{
         	//use grid.remove(location) only when you are moving, not when actually pulling the Actor from the Grid
         	grid.remove(location);
 	        grid.put(newLocation, b);
-	        grid.put(location, new Trail(grid));
+	        grid.put(location, new Trail(grid, b.getColor()));
         }
     }
     

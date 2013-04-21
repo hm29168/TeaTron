@@ -1,17 +1,22 @@
 package players;
 
+import java.awt.Color;
+
 import world.TronGrid;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
 public class SimpleBike extends Bike{
 	public SimpleBike(TronGrid<CustomActor> gr){
-		this(gr, "Some Bike");
+		super(gr);
 	}
 	
 	public SimpleBike(TronGrid<CustomActor> gr, String name){
-		super(gr);
-		this.name = name;
+		super(gr, name);
+	}
+	
+	public SimpleBike(TronGrid<CustomActor> gr, String name, Color color) {
+		super(gr, name, color);
 	}
 
 	@Override
