@@ -8,7 +8,7 @@ import players.SimpleBike;
 
 public class TronRunner {
 	
-	static boolean RANDOM_POSITION = false;
+	static boolean RANDOM_POSITION = true;
 	
 	public static void main(String[] args){
 		TronWorld world = new TronWorld(10, 10); //Eventually should be much bigger
@@ -20,8 +20,6 @@ public class TronRunner {
 		//These logs will say who crashed at what time so we can see who won each round and who got second or so
 		
 		//direction is in bearings, wtf. get used to it.
-		//weird thing. they don't all crash at the same time. wat. timing issues? 
-		//or maybe another Bike is crashing before it can crash another. how to deal?
 
 		Bike a = new SimpleBike(world.getGrid(), "Jabari",Color.RED);
 		Bike b = new SimpleBike(world.getGrid(), "Lilly", Color.YELLOW);

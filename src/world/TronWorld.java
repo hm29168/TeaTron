@@ -1,6 +1,7 @@
 package world;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 import players.*;
 
@@ -27,48 +28,91 @@ public class TronWorld extends World<CustomActor>{
 
     public void step() {
         Grid<CustomActor> gr = getGrid();
-        ArrayList<CustomActor> actors = new ArrayList<CustomActor>();
+        LinkedList<CustomActor> actors = new LinkedList<CustomActor>();
+        LinkedList<Bike> bikes = new LinkedList<Bike>();
+        HashMap<Bike, Location> proposedLocations = new HashMap<Bike, Location>();
+        
         for (Location loc : gr.getOccupiedLocations())
             actors.add(gr.get(loc)); //Obtain all of the actors in our grid
-
+        
         for (CustomActor a : actors) {
         	if (a instanceof Bike){
-        		moveBike((Bike) a);
+        		bikes.add((Bike) a);
+        		proposedLocations.put((Bike) a, proposedMove((Bike) a));
         	}
         	if(a instanceof Trail) {
         		((Trail) a).act();
         	}
         }
+        resolveConflicts(actors, bikes, proposedLocations);
     }
     
-    public void moveBike(Bike b){
+    public void resolveConflicts(LinkedList<CustomActor> actors, 
+    							 LinkedList<Bike> bikes, 
+    							 HashMap<Bike, Location> proposedLocations) {
+    	
+    	LinkedList<Bike> crashedBikes = new LinkedList<Bike>();
+    	TronGrid<CustomActor> grid = getGrid();
+    	
+    	for(Bike b : bikes) {
+    		Location location = grid.getLocation(b);
+    		Location newLocation = proposedLocations.get(b);
+    		
+    		if(!grid.isValid(newLocation)) { //Going out of the grid (Want to add trail if do this???)
+                crashedBikes.add(b);
+    		}
+    		
+    		if(newLocation.equals(location)) { //Staying in the same place or error occurred in move function
+    			crashedBikes.add(b);
+    		}
+    		
+    		//This is a pretty inefficient function
+    		for(CustomActor a : actors) {
+    			if(proposedLocations.get(b).equals(a.getLocation())) { //If you run into a current actor (including other bikes b/c that's where their trail will be)
+    				crashedBikes.add(b);
+    				break;
+    			}
+    		}
+    		
+    		//Check if there are any conflicts in the proposedLocations
+    		proposedLocations.remove(b);
+    		if(proposedLocations.containsValue(newLocation)) crashBike(b);
+    		proposedLocations.put(b, newLocation);
+    	}
+    	
+    	for(Bike b: bikes) {
+    		if(crashedBikes.contains(b)) crashBike(b);
+    		else moveBike(b, proposedLocations.get(b));
+    	}
+    }
+    
+    public Location proposedMove(Bike b){
     	TronGrid<CustomActor> grid = getGrid();
     	Location location = grid.getLocation(b);
-    	int newDirection = b.move();
-    	b.setDirection(newDirection);
-    	Location newLocation = location.getAdjacentLocation(newDirection);
     	
-        if (!grid.isValid(newLocation) || newLocation.equals(location)){
-//            throw new IllegalArgumentException("Location " + newLocation
-//                    + " is not valid.");
-        	crashBike(b);
-        }
-        
-        CustomActor other = grid.get(newLocation);
-        
-        //crash boom
-        if (other != null){
-        	if (other instanceof Bike){
-        		crashBike((Bike) other);
-        	}
-        	crashBike(b);
-        }
-        else {
-        	//use grid.remove(location) only when you are moving, not when actually pulling the Actor from the Grid
-        	grid.remove(location);
-	        grid.put(newLocation, b);
-	        grid.put(location, new Trail(grid, b.getColor()));
-        }
+    	int newDirection;
+    	
+    	try {
+    		newDirection = b.move();
+    	} catch (Exception e) {
+    		return location;
+    	}
+
+    	b.setDirection(newDirection);
+    	return location.getAdjacentLocation(newDirection);
+    }
+    
+    public void moveBike(Bike b, Location newLocation) { //This function is only called when we know for certain there is no conflict
+    	TronGrid<CustomActor> grid = getGrid();
+    	Location location = grid.getLocation(b);
+    	System.out.println(b);
+    	System.out.println(location);
+    	System.out.println();
+    	
+    	//use grid.remove(location) only when you are moving, not when actually pulling the Actor from the Grid
+    	grid.remove(location);
+        grid.put(newLocation, b);
+        grid.put(location, new Trail(grid, b.getColor()));
     }
     
     public void crashBike(Bike b){
