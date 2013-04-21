@@ -25,6 +25,11 @@ public class TronGrid<E> extends BoundedGrid<E>{
 		return location;
 	}
 	
+	public boolean isValid(Location loc){
+		if (loc == null){return false;}
+		return super.isValid(loc);
+	}
+	
     public ArrayList<Location> getUnoccupiedLocations() {
         ArrayList<Location> theLocations = new ArrayList<Location>();
 

@@ -3,8 +3,6 @@ import java.awt.Color;
 
 import world.TronGrid;
 
-import info.gridworld.actor.Actor;
-
 public class Trail extends CustomActor{
 
     private static final double DARKENING_FACTOR = 0.05;

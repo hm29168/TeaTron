@@ -11,14 +11,16 @@ import info.gridworld.world.World;
 
 public class TronWorld extends World<CustomActor>{
 	
-	int numCrashed;
+	int curStep;
+	int numCrashes;
 	
 	//The setMessage function is pretty cool to use in World.java
 	//Also, if we really have time, we could implement user control with the keyPressed function to play against our AI :D
 	
 	TronWorld(int width, int height){
 		super(new TronGrid<CustomActor>(width, height));
-		numCrashed = 1;
+		curStep = 0;
+		numCrashes = 0;
 	}
 	
     //Need this function so don't have to cast everytime
@@ -45,6 +47,7 @@ public class TronWorld extends World<CustomActor>{
         	}
         }
         resolveConflicts(actors, bikes, proposedLocations);
+        curStep ++;
     }
     
     public void resolveConflicts(LinkedList<CustomActor> actors, 
@@ -60,65 +63,80 @@ public class TronWorld extends World<CustomActor>{
     		
     		if(!grid.isValid(newLocation)) { //Going out of the grid (Want to add trail if do this???)
                 crashedBikes.add(b);
+                continue;
     		}
     		
     		if(newLocation.equals(location)) { //Staying in the same place or error occurred in move function
     			crashedBikes.add(b);
-    		}
-    		
-    		//This is a pretty inefficient function
-    		for(CustomActor a : actors) {
-    			if(proposedLocations.get(b).equals(a.getLocation())) { //If you run into a current actor (including other bikes b/c that's where their trail will be)
-    				crashedBikes.add(b);
-    				break;
-    			}
+    			continue;
     		}
     		
     		//Check if there are any conflicts in the proposedLocations
     		proposedLocations.remove(b);
-    		if(proposedLocations.containsValue(newLocation)) crashBike(b);
+    		if(proposedLocations.containsValue(newLocation)){
+    			crashedBikes.add(b); 
+    			proposedLocations.put(b, newLocation); //gotta have this here 'cause the continue statement stop errthing
+    			continue;
+    		}
     		proposedLocations.put(b, newLocation);
+    		
+    		//This is a pretty inefficient function
+    		for(CustomActor a : actors) {
+    			//If you run into a current actor (including other bikes b/c that's where their trail will be)
+    			if(proposedLocations.get(b).equals(a.getLocation())) {
+    				crashedBikes.add(b);
+    				break;
+    			}
+    		}
     	}
     	
     	for(Bike b: bikes) {
     		if(crashedBikes.contains(b)) crashBike(b);
     		else moveBike(b, proposedLocations.get(b));
     	}
+    	
+    	if (crashedBikes.size() > 0){
+	    	setMessage(crashedBikes + " has/have crashed for [" + (4 - numCrashes) + "]th place.");
+	    	numCrashes += crashedBikes.size();
+    	}
+    	
     }
     
     public Location proposedMove(Bike b){
     	TronGrid<CustomActor> grid = getGrid();
     	Location location = grid.getLocation(b);
-    	
-    	int newDirection;
+    	Location newLocation = location;
     	
     	try {
-    		newDirection = b.move();
+    		int newDirection = b.move();
+    		
+    		//fix the direction and make sure its a right angle
+    		while(newDirection < 0){newDirection += 360;}
+        	if (newDirection % 90 == 0){
+	        	b.setDirection(newDirection);
+	        	newLocation = location.getAdjacentLocation(newDirection);
+        	}
     	} catch (Exception e) {
-    		return location;
     	}
-
-    	b.setDirection(newDirection);
-    	return location.getAdjacentLocation(newDirection);
+    	
+    	return newLocation;
     }
     
     public void moveBike(Bike b, Location newLocation) { //This function is only called when we know for certain there is no conflict
     	TronGrid<CustomActor> grid = getGrid();
     	Location location = grid.getLocation(b);
-    	System.out.println(b);
-    	System.out.println(location);
-    	System.out.println();
     	
     	//use grid.remove(location) only when you are moving, not when actually pulling the Actor from the Grid
-    	grid.remove(location);
-        grid.put(newLocation, b);
-        grid.put(location, new Trail(grid, b.getColor()));
+    	remove(location);
+        put(newLocation, b);
+        put(location, new Trail(grid, b.getColor()));
     }
     
     public void crashBike(Bike b){
-    	getGrid().remove(b.getLocation());
-    	setMessage("Crash #" + numCrashed + " is " +  b);
-    	numCrashed++;
+    	Location location = b.getLocation();
+    	remove(location);
+    	put(location, new Trail(getGrid(), b.getColor()));
+    	System.out.println(b + " crashed at step [" + curStep + "] for [" + (4 - numCrashes) + "]th place.");
     }
 
     /**
@@ -142,6 +160,12 @@ public class TronWorld extends World<CustomActor>{
         Location loc = getRandomEmptyLocation();
         if (loc != null)
             add(loc, occupant);
+    }
+    
+    public void put(Location location, CustomActor occupant){
+    	if (occupant != null){
+	    	getGrid().put(location, occupant);
+    	}
     }
 
     /**

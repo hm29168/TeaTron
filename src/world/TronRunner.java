@@ -3,8 +3,7 @@ package world;
 import java.awt.Color;
 
 import info.gridworld.grid.Location;
-import players.Bike;
-import players.SimpleBike;
+import players.*;
 
 public class TronRunner {
 	
@@ -21,9 +20,9 @@ public class TronRunner {
 		
 		//direction is in bearings, wtf. get used to it.
 
-		Bike a = new SimpleBike(world.getGrid(), "Jabari",Color.RED);
+		Bike a = new ConstantBike(world.getGrid(), "Jabari",Color.RED);
 		Bike b = new SimpleBike(world.getGrid(), "Lilly", Color.YELLOW);
-		Bike c = new SimpleBike(world.getGrid(), "Josh", Color.GREEN);
+		Bike c = new RandomBike(world.getGrid(), "Josh", Color.GREEN);
 		Bike d = new SimpleBike(world.getGrid(), "Sam", Color.BLUE);
 		
 		if(!RANDOM_POSITION) {
