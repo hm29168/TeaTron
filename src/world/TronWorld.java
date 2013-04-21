@@ -10,8 +10,14 @@ import info.gridworld.world.World;
 
 public class TronWorld extends World<CustomActor>{
 	
+	int numCrashed;
+	
+	//The setMessage function is pretty cool to use in World.java
+	//Also, if we really have time, we could implement user control with the keyPressed function to play against our AI :D
+	
 	TronWorld(int width, int height){
 		super(new TronGrid<CustomActor>(width, height));
+		numCrashed = 1;
 	}
 	
     //Need this function so don't have to cast everytime
@@ -23,17 +29,12 @@ public class TronWorld extends World<CustomActor>{
         Grid<CustomActor> gr = getGrid();
         ArrayList<CustomActor> actors = new ArrayList<CustomActor>();
         for (Location loc : gr.getOccupiedLocations())
-            actors.add(gr.get(loc));
+            actors.add(gr.get(loc)); //Obtain all of the actors in our grid
 
         for (CustomActor a : actors) {
-            // only act if another actor hasn't removed a
-        	//also handle the trail-making here and anything else game-side
-            if (a.getGrid() == gr && a.getLocation() != null){
-            	if (a instanceof Bike){
-            		Bike thisBike = (Bike)a;
-            		moveBike(thisBike);
-            	}
-            }
+        	if (a instanceof Bike){
+        		moveBike((Bike) a);
+        	}
         }
     }
     
@@ -59,8 +60,7 @@ public class TronWorld extends World<CustomActor>{
         //crash boom
         if (other != null){
         	if (other instanceof Bike){
-        		Bike otherBike = (Bike)other;
-        		crashBike(otherBike);
+        		crashBike((Bike) other);
         	}
         	crashBike(b);
         }
@@ -74,7 +74,8 @@ public class TronWorld extends World<CustomActor>{
     
     public void crashBike(Bike b){
     	getGrid().remove(b.getLocation());
-    	System.out.println(b + " has crashed.");
+    	setMessage("Crash #" + numCrashed + " is " +  b);
+    	numCrashed++;
     }
 
     /**
