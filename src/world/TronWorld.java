@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import players.*;
+import players.architecture.Bike;
+import players.architecture.CustomActor;
+import players.architecture.Trail;
 
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;

@@ -3,6 +3,9 @@ package players;
 import java.awt.Color;
 import java.util.Random;
 
+import players.architecture.Bike;
+import players.architecture.CustomActor;
+
 import world.TronGrid;
 
 public class RandomBike extends Bike {

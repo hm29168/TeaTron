@@ -1,4 +1,4 @@
-package players;
+package players.architecture;
 
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;

@@ -1,5 +1,6 @@
-package players;
+package players.architecture;
 import java.awt.Color;
+
 
 import world.TronGrid;
 

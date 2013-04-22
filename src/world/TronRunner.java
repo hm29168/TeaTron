@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import info.gridworld.grid.Location;
 import players.*;
+import players.architecture.Bike;
 
 public class TronRunner {
 	
@@ -14,9 +15,6 @@ public class TronRunner {
 		
 		//Eventually, we want this function to put the bikes in predetermined (random?) positions
 		//Then, we can just run it and see who wins
-		
-		//Alternatively, rather than manually tabulating it, we could make logs / print outs
-		//These logs will say who crashed at what time so we can see who won each round and who got second or so
 		
 		//direction is in bearings, wtf. get used to it.
 
