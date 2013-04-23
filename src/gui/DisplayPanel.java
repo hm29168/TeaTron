@@ -28,20 +28,23 @@ public class DisplayPanel extends JPanel{
 		super();
 		this.world = world;
 		
-		int rows = world.getGrid().getNumRows();
-		int cols = world.getGrid().getNumCols();
 		this.cellSize = cellSize;
 		imageScale = (double)(this.cellSize) / imageSize;
 		
+		int rows = world.getGrid().getNumRows();
+		int cols = world.getGrid().getNumCols();
+		//the math takes into account the lines that are drawn inbetween cells
 		size = new Dimension((cols * (this.cellSize + 1)) + 1, (rows * (this.cellSize + 1)) + 1);
 		setPreferredSize(size);
 	}
 	
 	public void paint(Graphics g){
 		Graphics2D g2 = (Graphics2D)g;
-		AffineTransform saveXForm = g2.getTransform();
-		//g2.scale(imageScale, imageScale);
-		drawGrid(g2);
+		drawGrid(g2); //grid does not need to be scaled (its based on cellSize, not imageScale)
+		
+		//transformations
+		AffineTransform saveXForm = g2.getTransform(); //get the old transform so we can revert back to it
+		g2.scale(imageScale, imageScale); //scale for when draw the images
 		
 		//draw each actor
 		ArrayList<Location> occupiedLocations = world.getGrid().getOccupiedLocations();
@@ -50,6 +53,7 @@ public class DisplayPanel extends JPanel{
 			drawActor(g2, a);
 		}
 		
+		//revert to old transform
 		g2.setTransform(saveXForm);
 	}
 	
@@ -58,12 +62,14 @@ public class DisplayPanel extends JPanel{
 		Image image = a.getImage();
 		if (image != null){
 			//translate to center, rotate, then translate back to top-left of the image
+			//each transformation is relative to the image's size (it will be accounted for when we scale)
+			//(1/imageScale) takes care of the spacing that results from the grid's line
 			AffineTransform at = new AffineTransform();
-			int xoff = loc.getCol() * (cellSize + 1) + (cellSize / 2);
-			int yoff = loc.getRow() * (cellSize + 1) + (cellSize / 2);
+			double xoff = loc.getCol() * (imageSize + (1/imageScale)) + (imageSize / 2);
+			double yoff = loc.getRow() * (imageSize + (1/imageScale)) + (imageSize / 2);
 			at.translate(xoff, yoff);
-			at.rotate(a.getDirection() * (Math.PI / 180));
-			at.translate(-(cellSize / 2), -(cellSize / 2));
+			at.rotate(a.getDirection() * (Math.PI / 180)); //convert to radians and rotate
+			at.translate(-(imageSize / 2), -(imageSize / 2));
 			
 			//apply the color
 			FilteredImageSource src = new FilteredImageSource(image.getSource(), new TintFilter(a.getColor()));
@@ -79,9 +85,12 @@ public class DisplayPanel extends JPanel{
 		int cols = world.getGrid().getNumCols();
 		int w = (int)(size.getWidth());
 		int h = (int)(size.getHeight());
+		
+		//white bg
 		g2.setColor(Color.WHITE);
 		g2.fillRect(0, 0, w, h);
 		
+		//black lines
 		g2.setColor(Color.BLACK);
 		for(int row = 0; row < rows; row ++){
 			g2.drawLine(0, row * (cellSize + 1), w, row * (cellSize + 1));
@@ -92,6 +101,7 @@ public class DisplayPanel extends JPanel{
 		}
 	}
 	
+	//custom class straight outta GridWorld.
 	private static class TintFilter extends RGBImageFilter
     {
         private int tintR, tintG, tintB;
@@ -111,7 +121,7 @@ public class DisplayPanel extends JPanel{
 
         public int filterRGB(int x, int y, int argb)
         {
-            // Separate pixel into its RGB coomponents.
+            // Separate pixel into its RGB components.
             int alpha = (argb >> 24) & 0xff;
             int red = (argb >> 16) & 0xff;
             int green = (argb >> 8) & 0xff;

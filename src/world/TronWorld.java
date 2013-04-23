@@ -22,7 +22,7 @@ import info.gridworld.world.World;
 
 public class TronWorld extends World<CustomActor>{
 	
-	static final boolean CUSTOM_RENDER = false;
+	static final boolean CUSTOM_RENDER = true;
 	
 	int curStep;
 	int numCrashes;
@@ -48,12 +48,13 @@ public class TronWorld extends World<CustomActor>{
 		}
 	}
 	
-	public void show(int cellSize)
+	//creates the JFrame
+	public void show(int cellSize, int runSpeed)
     {
 		if (CUSTOM_RENDER){
 	        if (frame == null)
 	        {
-	            frame = new TronFrame(this, cellSize);
+	            frame = new TronFrame(this, cellSize, runSpeed);
 	            frame.setVisible(true);
 	        }
 	        else
@@ -138,8 +139,8 @@ public class TronWorld extends World<CustomActor>{
     	}
     	
     	if (crashedBikes.size() > 0){
-	    	setMessage(crashedBikes + " has/have crashed for [" + (4 - numCrashes) + "]th place.");
-	    	numCrashes += crashedBikes.size();
+    		numCrashes += crashedBikes.size();
+	    	System.out.println(crashedBikes + " has/have crashed for [" + ((4 - numCrashes) + 1) + "]th place.");
     	}
     	
     }
@@ -178,7 +179,7 @@ public class TronWorld extends World<CustomActor>{
     	Location location = b.getLocation();
     	remove(location);
     	put(location, new Trail(getGrid(), trailImage, b.getColor()));
-    	System.out.println(b + " crashed at step [" + curStep + "] for [" + (4 - numCrashes) + "]th place.");
+    	//System.out.println(b + " has crashed at step [" + curStep + "]");
     }
 
     /**

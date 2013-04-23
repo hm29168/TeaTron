@@ -16,10 +16,13 @@ public class ControlPanel extends JPanel {
 	DisplayPanel display;
 	Timer timer;
 	
-	public ControlPanel(DisplayPanel display, TronWorld world){
+	int delay;
+	
+	public ControlPanel(DisplayPanel display, TronWorld world, int runSpeed){
 		super(new FlowLayout(FlowLayout.LEADING, 4, 4));
 		this.display = display;
 		this.world = world;
+		delay = runSpeed;
 		
 		createGUI();
 	}
@@ -27,6 +30,7 @@ public class ControlPanel extends JPanel {
 	public void createGUI(){
 		JButton stepButton, runButton, stopButton;
 		
+		//iterates a step in the given world (may soon be deprecated)
 		stepButton = new JButton(new AbstractAction("Step"){
 			public void actionPerformed(ActionEvent e) {
 				world.step();
@@ -34,6 +38,7 @@ public class ControlPanel extends JPanel {
 			}
 		});
 		
+		//creates a timer that continuously calls the step() method of the world after a certain delay (runSpeed)
 		runButton = new JButton(new AbstractAction("Run"){
 			public void actionPerformed(ActionEvent e) {
 				timer = new Timer();
@@ -43,20 +48,23 @@ public class ControlPanel extends JPanel {
 						display.repaint();
 					}		
 				};
-				timer.schedule(runTask, 0, 500);
+				timer.schedule(runTask, 0, delay);
 			}
 		});
 		
+		//stop the timer (cancel)
 		stopButton = new JButton(new AbstractAction("Stop"){
 			public void actionPerformed(ActionEvent e) {
 				timer.cancel();
 			}
 		});
 		
+		//add em onto the control panel (this)
 		add(stepButton);
 		add(runButton);
 		add(stopButton);
 		
+		//transparency
 		setOpaque(false);
 	}
 }
