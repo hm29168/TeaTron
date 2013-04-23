@@ -4,6 +4,11 @@ import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import world.TronGrid;
 
@@ -19,15 +24,22 @@ public abstract class CustomActor
     private TronGrid<CustomActor> grid;
     private int direction;
     private Color color;
+    private Image image;
 
     /**
      * Constructs a blue actor that is facing north.
      */
     public CustomActor(TronGrid<CustomActor> gr)
     {
-        color = Color.BLUE;
+        this(gr, null);
+    }
+    
+    public CustomActor(TronGrid<CustomActor> gr, Image image){
+    	color = Color.BLUE;
         direction = Location.NORTH;
         grid = gr;
+        this.image = image;
+        
     }
 
     /**
@@ -88,6 +100,10 @@ public abstract class CustomActor
     public final Location getLocation()
     {
         return grid.getLocation(this);
+    }
+    
+    public Image getImage(){
+    	return image;
     }
     
     protected final void removeSelfFromGrid(){

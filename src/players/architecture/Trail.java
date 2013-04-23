@@ -1,5 +1,7 @@
 package players.architecture;
 import java.awt.Color;
+import java.awt.Image;
+import java.io.File;
 
 
 import world.TronGrid;
@@ -9,8 +11,8 @@ public class Trail extends CustomActor{
     private static final double DARKENING_FACTOR = 0.05;
     private static final int DARK_LIMIT = 150;
 	
-	public Trail(TronGrid<CustomActor> gr, Color color){
-		super(gr);
+	public Trail(TronGrid<CustomActor> gr, Image image, Color color){
+		super(gr, image);
 		setColor(color);
 	}
 	

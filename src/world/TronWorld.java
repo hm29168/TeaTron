@@ -1,30 +1,68 @@
 package world;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import javax.imageio.ImageIO;
 
 import players.*;
 import players.architecture.Bike;
 import players.architecture.CustomActor;
 import players.architecture.Trail;
 
+import gui.TronFrame;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
+import info.gridworld.gui.WorldFrame;
 import info.gridworld.world.World;
 
 public class TronWorld extends World<CustomActor>{
 	
+	static final boolean CUSTOM_RENDER = false;
+	
 	int curStep;
 	int numCrashes;
+	TronFrame frame;
+	Image trailImage;
 	
 	//The setMessage function is pretty cool to use in World.java
 	//Also, if we really have time, we could implement user control with the keyPressed function to play against our AI :D
 	
-	TronWorld(int width, int height){
+	public TronWorld(int width, int height){
 		super(new TronGrid<CustomActor>(width, height));
 		curStep = 0;
 		numCrashes = 0;
+		trailImage = null;
+	    try {
+			trailImage = ImageIO.read(new File(getClass().getResource("/players/architecture/Trail.gif").toURI()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
+	public void show(int cellSize)
+    {
+		if (CUSTOM_RENDER){
+	        if (frame == null)
+	        {
+	            frame = new TronFrame(this, cellSize);
+	            frame.setVisible(true);
+	        }
+	        else
+	            frame.repaint();
+		}
+		else{
+			super.show();
+		}
+    }
 	
     //Need this function so don't have to cast everytime
     public TronGrid<CustomActor> getGrid(){
@@ -32,6 +70,7 @@ public class TronWorld extends World<CustomActor>{
     }	
 
     public void step() {
+    	//System.out.println("Step[" + curStep + "]");
         Grid<CustomActor> gr = getGrid();
         LinkedList<CustomActor> actors = new LinkedList<CustomActor>();
         LinkedList<Bike> bikes = new LinkedList<Bike>();
@@ -132,13 +171,13 @@ public class TronWorld extends World<CustomActor>{
     	//use grid.remove(location) only when you are moving, not when actually pulling the Actor from the Grid
     	remove(location);
         put(newLocation, b);
-        put(location, new Trail(grid, b.getColor()));
+        put(location, new Trail(grid, trailImage, b.getColor()));
     }
     
     public void crashBike(Bike b){
     	Location location = b.getLocation();
     	remove(location);
-    	put(location, new Trail(getGrid(), b.getColor()));
+    	put(location, new Trail(getGrid(), trailImage, b.getColor()));
     	System.out.println(b + " crashed at step [" + curStep + "] for [" + (4 - numCrashes) + "]th place.");
     }
 
