@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 import players.*;
 import players.architecture.Bike;
@@ -24,13 +25,11 @@ import info.gridworld.world.World;
 
 public class TronWorld extends World<CustomActor>{
 	
-	static final boolean CUSTOM_RENDER = true;
-	
-	int curStep;
-	int numCrashes;
-	TronFrame frame;
-	Image trailImage;
-	Timer timer;
+	private int curStep;
+	private int numCrashes;
+	private TronFrame frame;
+	private Image trailImage;
+	private Timer timer;
 	
 	//The setMessage function is pretty cool to use in World.java
 	//Also, if we really have time, we could implement user control with the keyPressed function to play against our AI :D
@@ -50,23 +49,6 @@ public class TronWorld extends World<CustomActor>{
 			e.printStackTrace();
 		}
 	}
-	
-	//creates the JFrame
-	public void show(int cellSize, int runSpeed)
-    {
-		if (CUSTOM_RENDER){
-	        if (frame == null)
-	        {
-	            frame = new TronFrame(this, cellSize, runSpeed);
-	            frame.setVisible(true);
-	        }
-	        else
-	            frame.repaint();
-		}
-		else{
-			super.show();
-		}
-    }
 	
     //Need this function so don't have to cast everytime
     public TronGrid<CustomActor> getGrid(){
@@ -277,5 +259,10 @@ public class TronWorld extends World<CustomActor>{
             return null;
         getGrid().remove(loc);
         return occupant;
+    }
+    
+    public void setFrame(TronFrame frame){
+    	this.frame = frame; //now that I know what the frame is
+    	frame.setWorld(this); //update the frame on who I am
     }
 }

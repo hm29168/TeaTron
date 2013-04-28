@@ -18,11 +18,12 @@ import players.architecture.CustomActor;
 import world.TronWorld;
 
 public class DisplayPanel extends JPanel{
-	TronWorld world;
-	Dimension size;
-	int cellSize;
-	int imageSize = 48;
-	double imageScale;
+	private TronWorld world;
+	private Dimension size;
+	private int cellSize;
+	private double imageScale;
+	
+	static final int imageSize = 48;
 	
 	public DisplayPanel(TronWorld world, int cellSize){
 		super();
@@ -99,6 +100,11 @@ public class DisplayPanel extends JPanel{
 		for(int col = 0; col < cols; col ++){
 			g2.drawLine(col * (cellSize + 1), 0, col * (cellSize + 1), h);
 		}
+	}
+	
+	public void setWorld(TronWorld world){
+		this.world = world;
+		repaint();
 	}
 	
 	//custom class straight outta GridWorld.

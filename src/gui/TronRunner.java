@@ -17,9 +17,12 @@ import world.TronWorld;
 
 public class TronRunner{
 	static final int RUN_SPEED = 100; //run-time delay in milliseconds
-	static boolean RANDOM_POSITION = false;
+	static final boolean RANDOM_POSITION = false;
+	static final boolean CUSTOM_RENDER = true;
 	private int numCells, cellSize;
 	private long SEED; //controls the setup, not how each Bike runs
+	private TronWorld world;
+	private TronFrame frame;
 	
 	//calculates a proper cell size that is a multiple
 	public static int calculateCellSize(int rows, int cols, int frameLen, int multiple){
@@ -37,7 +40,7 @@ public class TronRunner{
 	public static void main(String[] args){
 		//create a 20 x 20 world with max window width of 600, with the individual cell size being a multiple of 2
 		TronRunner tr = new TronRunner((long) 1366758834221.0, 20, 600, 2);
-		tr.setupWorld();
+		tr.reset();
 	}
 	
 	//constructors
@@ -73,6 +76,25 @@ public class TronRunner{
 		return SEED;
 	}
 	
+	public TronWorld getWorld(){
+		return world;
+	}
+	
+	public void show(){
+		if (CUSTOM_RENDER){
+			if (frame == null){
+				frame = new TronFrame(this, cellSize, RUN_SPEED);
+				frame.setVisible(true);
+				frame.repaint();
+			}
+			
+			world.setFrame(frame); //when we make a new world, it needs the current frame
+		}
+		else{
+			world.show();
+		}
+	}
+	
 	//a way to shuffle the bikes
 	public void shuffleBikes(Bike[] bikes){
 		Random r = new Random(SEED);
@@ -88,14 +110,13 @@ public class TronRunner{
 	}
 	
 	//setup method
-	public void setupWorld(){
+	public void reset(){
+		System.out.println("");
 		System.out.println("Seed: " + SEED);
 		System.out.println("Number of Cells: " + numCells);
 		System.out.println("Cell Size: " + cellSize);
 		
-		
-		
-		TronWorld world = new TronWorld(numCells, numCells); //Eventually should be much bigger
+		world = new TronWorld(numCells, numCells); //Eventually should be much bigger
 		
 		//Eventually, we want this function to put the bikes in predetermined (random?) positions
 		//Then, we can just run it and see who wins
@@ -145,7 +166,6 @@ public class TronRunner{
 		}
 		
 		System.out.println("");
-		world.show(cellSize, RUN_SPEED);
-		//world.run(RUN_SPEED);
+		show();
 	}
 }
