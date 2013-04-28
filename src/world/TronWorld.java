@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 
@@ -28,6 +30,7 @@ public class TronWorld extends World<CustomActor>{
 	int numCrashes;
 	TronFrame frame;
 	Image trailImage;
+	Timer timer;
 	
 	//The setMessage function is pretty cool to use in World.java
 	//Also, if we really have time, we could implement user control with the keyPressed function to play against our AI :D
@@ -69,6 +72,56 @@ public class TronWorld extends World<CustomActor>{
     public TronGrid<CustomActor> getGrid(){
     	return (TronGrid<CustomActor>) super.getGrid();
     }	
+    
+    //simulates the game until last man standing
+    public void run(int runSpeed){
+    	//stop the current task
+    	if (timer != null){timer.cancel();}
+    	
+    	//make a new timer and task for it to run
+    	timer = new Timer();
+		TimerTask runTask = new TimerTask(){
+			public void run() {
+				if (bikesLeft() <= 1){
+					timer.cancel();
+					endGame();
+				}
+				else{
+					step();
+					if(frame != null){
+						frame.repaint();
+					}
+				}
+				
+			}		
+		};
+		timer.schedule(runTask, 0, runSpeed);
+    }
+    
+    public void endGame(){
+    	System.out.println("Game end.");
+    	/*try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	System.exit(0);*/
+    }
+    
+    public int bikesLeft(){
+    	int numBikes = 0;
+		
+		Grid<CustomActor> gr = getGrid();
+		for(Location loc : gr.getOccupiedLocations()){
+			CustomActor a = gr.get(loc);
+			if (a instanceof Bike){
+				numBikes ++;
+			}
+		}
+		
+		return numBikes;
+    }
 
     public void step() {
     	//System.out.println("Step[" + curStep + "]");
@@ -89,8 +142,9 @@ public class TronWorld extends World<CustomActor>{
         		((Trail) a).act();
         	}
         }
-        resolveConflicts(actors, bikes, proposedLocations);
         curStep ++;
+        
+        resolveConflicts(actors, bikes, proposedLocations);
     }
     
     public void resolveConflicts(LinkedList<CustomActor> actors, 
@@ -142,7 +196,6 @@ public class TronWorld extends World<CustomActor>{
     		numCrashes += crashedBikes.size();
 	    	System.out.println(crashedBikes + " has/have crashed for [" + ((4 - numCrashes) + 1) + "]th place.");
     	}
-    	
     }
     
     public Location proposedMove(Bike b){

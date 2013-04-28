@@ -93,6 +93,8 @@ public class TronRunner{
 		System.out.println("Number of Cells: " + numCells);
 		System.out.println("Cell Size: " + cellSize);
 		
+		
+		
 		TronWorld world = new TronWorld(numCells, numCells); //Eventually should be much bigger
 		
 		//Eventually, we want this function to put the bikes in predetermined (random?) positions
@@ -120,13 +122,7 @@ public class TronRunner{
 		shuffleBikes(bikes); //bikes will be shuffled regardless of whether RANDOM_POSITION is true or not
 		
 		if(!RANDOM_POSITION) {
-			//NOTE!! IN THE COMPETITION, WE NEED TO MAKE THIS ORDERED LAYOUT PSEUDO-RANDOM TOO
-			//i.e. we can not have Bike A start out in the bottom right position everytime
-			
 			//remember that Location is in the form of (row, col), not (x, y)!
-			int rows = world.getGrid().getNumRows();
-			int cols = world.getGrid().getNumCols();
-			
 			int curRow = numCells / 4;
 			int curCol = numCells / 4;
 			int placeLen = numCells - (curRow * 2) - 1;
@@ -150,5 +146,6 @@ public class TronRunner{
 		
 		System.out.println("");
 		world.show(cellSize, RUN_SPEED);
+		//world.run(RUN_SPEED);
 	}
 }
