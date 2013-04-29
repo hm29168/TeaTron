@@ -19,8 +19,10 @@ public class TronRunner{
 	static final int RUN_SPEED = 100; //run-time delay in milliseconds
 	static final boolean RANDOM_POSITION = false;
 	static final boolean CUSTOM_RENDER = true;
+	static final boolean USE_SEED = false; //whether or not to use a custom seed
+	static long SEED; //controls the setup, not how each Bike runs
+	
 	private int numCells, cellSize;
-	private long SEED; //controls the setup, not how each Bike runs
 	private TronWorld world;
 	private TronFrame frame;
 	
@@ -39,26 +41,21 @@ public class TronRunner{
 	//setup and run
 	public static void main(String[] args){
 		//create a 20 x 20 world with max window width of 600, with the individual cell size being a multiple of 2
-		TronRunner tr = new TronRunner((long) 1366758834221.0, 20, 600, 2);
+		TronRunner tr = new TronRunner(20, 600, 2);
 		tr.reset();
 	}
 	
 	//constructors
 	public TronRunner(int numCells){
-		this(System.currentTimeMillis(), numCells, 48);
+		this(numCells, 48);
 	}
 	
 	public TronRunner(int numCells, int maxWidth, int multiple){
-		this(System.currentTimeMillis(), numCells, maxWidth, multiple);
-	}
-	
-	public TronRunner(long seed, int numCells, int maxWidth, int multiple){
-		this(seed, numCells,
+		this(numCells,
 				calculateCellSize(numCells, numCells, maxWidth, multiple)); //actual cell length; use 48 for 100% scale
 	}
 	
-	public TronRunner(long seed, int numCells, int cellSize){
-		SEED = seed;
+	public TronRunner(int numCells, int cellSize){
 		this.numCells = numCells;
 		this.cellSize = cellSize;
 	}
@@ -111,6 +108,10 @@ public class TronRunner{
 	
 	//setup method
 	public void reset(){
+		if (!USE_SEED){
+			SEED = System.currentTimeMillis();
+		}
+		
 		System.out.println("");
 		System.out.println("Seed: " + SEED);
 		System.out.println("Number of Cells: " + numCells);
