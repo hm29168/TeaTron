@@ -180,7 +180,7 @@ public class TronWorld extends World<CustomActor>{
     	}
     }
     
-    public Location proposedMove(Bike b){
+    private Location proposedMove(Bike b){
     	TronGrid<CustomActor> grid = getGrid();
     	Location location = grid.getLocation(b);
     	Location newLocation = location;

@@ -4,19 +4,24 @@ import java.awt.Image;
 
 import world.TronGrid;
 
-public abstract class Bike extends CustomActor{
+public class Bike extends CustomActor{
 	String name;
 	
-	public Bike(TronGrid<CustomActor> gr, String name, Image image, Color color) {
+	private Team team;
+	
+	public Bike(TronGrid<CustomActor> gr, String name, Image image, Color color, Team team) {
 		super(gr, image);
 		this.name = name;
+		this.team = team;
+		team.addBike(this);
 		setColor(color);
 	}
 	
-	//override this function for movement
-	public abstract int move();
+	public int move(){
+		return team.move(this);
+	}
 	
 	public String toString(){
-		return "<" + name + ">";
+		return "<" + name + " of " + team + ">";
 	}
 }
