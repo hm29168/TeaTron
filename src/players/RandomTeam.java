@@ -17,10 +17,4 @@ public class RandomTeam extends Team{
 		return (new Random().nextInt(4) * 90);
 	}
 
-	@Override
-	public String getBikeImageString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

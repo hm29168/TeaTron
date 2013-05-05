@@ -130,14 +130,14 @@ public class TronRunner{
 		//Then, we can just run it and see who wins
 		
 		//direction is in bearings, wtf. get used to it.
+		//^lol, why bearings.
 		
-
+			
 		//define our teams
 		teams.put("Sam", new RandomTeam("StraightOuttaCompton"));
 		teams.put("Jabari", new SimpleTeam("Team2"));
 		teams.put("Lilly", new ConstantTeam("Team3"));
 		teams.put("Josh", new SimpleTeam("team3"));
-		
 		
 		//define our bikes
 		Bike[] bikes = {

@@ -19,10 +19,11 @@ public abstract class Team {
 	protected String teamOwner;
 	protected Image teamImage;
 	
+	private static final String GENERIC_BIKE = "/players/architecture/Bike.gif";
+	
 	public Team(String teamName){
 		this.teamOwner = teamName;
 		bikes = new ArrayList<Bike>();
-		
 		try {
 			teamImage = ImageIO.read(new File(getClass().getResource(getBikeImageString()).toURI()));
 		} catch (IOException e) {
@@ -49,7 +50,7 @@ public abstract class Team {
 	 * Otherwise, the generic image is provided.
 	 */
 	protected String getBikeImageString(){
-		return "Bike.gif";
+		return GENERIC_BIKE;
 	}
 	
 	public Image getTeamImage(){
