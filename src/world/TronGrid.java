@@ -1,6 +1,9 @@
 package world;
 
+import java.awt.Color;
 import java.util.ArrayList;
+
+import players.architecture.CustomActor;
 
 import info.gridworld.grid.BoundedGrid;
 import info.gridworld.grid.Location;
@@ -42,5 +45,14 @@ public class TronGrid<E> extends BoundedGrid<E>{
         }
 
         return theLocations;
+    }
+    
+    //This was requested by Josh?
+    public Color getColorAt(Location loc) {
+    	if(isValid(loc) && get(loc) != null) {
+    		return ((CustomActor) get(loc)).getColor(); 
+    	}
+    	
+    	return Color.WHITE;
     }
 }

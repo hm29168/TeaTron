@@ -4,15 +4,14 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 
-import players.*;
 import players.architecture.Bike;
 import players.architecture.CustomActor;
 import players.architecture.Trail;
@@ -20,34 +19,33 @@ import players.architecture.Trail;
 import gui.TronFrame;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
-import info.gridworld.gui.WorldFrame;
 import info.gridworld.world.World;
 
 public class TronWorld extends World<CustomActor>{
-	
-	private int curStep;
 	private int numCrashes;
 	private TronFrame frame;
 	private Image trailImage;
 	private Timer timer;
 	
-	//The setMessage function is pretty cool to use in World.java
-	//Also, if we really have time, we could implement user control with the keyPressed function to play against our AI :D
+	private ArrayList<Integer> totalScores = new ArrayList<Integer>();
+	private int totalGames = 0;
+    private int totalBikes;
 	
 	public TronWorld(int width, int height){
 		super(new TronGrid<CustomActor>(width, height));
-		curStep = 0;
 		numCrashes = 0;
 		trailImage = null;
 	    try {
 			trailImage = ImageIO.read(new File(getClass().getResource("/players/architecture/Trail.gif").toURI()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void setTotalBikes(int totalBikes) {
+		this.totalBikes = totalBikes;  
 	}
 	
     //Need this function so don't have to cast everytime
@@ -82,13 +80,6 @@ public class TronWorld extends World<CustomActor>{
     
     public void endGame(){
     	System.out.println("Game end.");
-    	/*try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	System.exit(0);*/
     }
     
     public int bikesLeft(){
@@ -106,7 +97,6 @@ public class TronWorld extends World<CustomActor>{
     }
 
     public void step() {
-    	//System.out.println("Step[" + curStep + "]");
         Grid<CustomActor> gr = getGrid();
         LinkedList<CustomActor> actors = new LinkedList<CustomActor>();
         LinkedList<Bike> bikes = new LinkedList<Bike>();
@@ -123,9 +113,7 @@ public class TronWorld extends World<CustomActor>{
         	if(a instanceof Trail) {
         		((Trail) a).act();
         	}
-        }
-        curStep ++;
-        
+        }        
         resolveConflicts(actors, bikes, proposedLocations);
     }
     
@@ -140,7 +128,7 @@ public class TronWorld extends World<CustomActor>{
     		Location location = grid.getLocation(b);
     		Location newLocation = proposedLocations.get(b);
     		
-    		if(!grid.isValid(newLocation)) { //Going out of the grid (Want to add trail if do this???)
+    		if(!grid.isValid(newLocation)) { //Going out of the grid
                 crashedBikes.add(b);
                 continue;
     		}
@@ -176,7 +164,7 @@ public class TronWorld extends World<CustomActor>{
     	
     	if (crashedBikes.size() > 0){
     		numCrashes += crashedBikes.size();
-	    	System.out.println(crashedBikes + " has/have crashed for [" + ((4 - numCrashes) + 1) + "]th place.");
+	    	System.out.println(crashedBikes + " has/have crashed for [" + ((totalBikes - numCrashes) + 1) + "]th place.");
     	}
     }
     

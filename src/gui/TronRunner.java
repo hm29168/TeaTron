@@ -1,11 +1,11 @@
 package gui;
 
+
 import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -17,10 +17,14 @@ import world.TronWorld;
 
 public class TronRunner{
 	static final int RUN_SPEED = 100; //run-time delay in milliseconds
-	static final boolean RANDOM_POSITION = false;
+	static final boolean RANDOM_POSITION = true;
 	static final boolean CUSTOM_RENDER = true;
+	
 	static final boolean USE_SEED = false; //whether or not to use a custom seed
 	static long SEED; //controls the setup, not how each Bike runs
+	
+	static int WORLD_SIZE = 20; //Side length of square world
+	static int WINDOW_WIDTH = 600;
 	
 	private int numCells, cellSize;
 	private TronWorld world;
@@ -41,7 +45,7 @@ public class TronRunner{
 	//setup and run
 	public static void main(String[] args){
 		//create a 20 x 20 world with max window width of 600, with the individual cell size being a multiple of 2
-		TronRunner tr = new TronRunner(20, 600, 2);
+		TronRunner tr = new TronRunner(WORLD_SIZE, WINDOW_WIDTH, 2);
 		tr.reset();
 	}
 	
@@ -117,31 +121,31 @@ public class TronRunner{
 		System.out.println("Number of Cells: " + numCells);
 		System.out.println("Cell Size: " + cellSize);
 		
-		world = new TronWorld(numCells, numCells); //Eventually should be much bigger
+		world = new TronWorld(numCells, numCells); 
 		
-		//Eventually, we want this function to put the bikes in predetermined (random?) positions
-		//Then, we can just run it and see who wins
-		
-		//direction is in bearings, wtf. get used to it.
 		Image bikeImage = null;
 		try {
 				bikeImage = ImageIO.read(new File(getClass().getResource("/players/architecture/Bike.gif").toURI()));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		//define our bikes
-		Bike[] bikes = {new ConstantBike(world.getGrid(), "Jabari", bikeImage, Color.RED),
+		Bike[] bikes = {new ConstantBike(world.getGrid(), "ROBOT", bikeImage, Color.DARK_GRAY),
 				new SimpleBike(world.getGrid(), "Lilly", bikeImage, Color.YELLOW),
-				new RandomBike(world.getGrid(), "Josh", bikeImage, Color.GREEN),
-				new SimpleBike(world.getGrid(), "Sam", bikeImage, Color.BLUE)};
+				new RandomBike(world.getGrid(), "HUMAN", bikeImage, Color.DARK_GRAY),
+				new SimpleBike(world.getGrid(), "Sam", bikeImage, Color.BLUE),
+				new SimpleBike(world.getGrid(), "Jabari", bikeImage, Color.RED),
+				new SimpleBike(world.getGrid(), "Josh", bikeImage, Color.GREEN)};
+		
+		world.setTotalBikes(bikes.length);
 		
 		//shuffle the bikes
-		shuffleBikes(bikes); //bikes will be shuffled regardless of whether RANDOM_POSITION is true or not
+		//bikes will be shuffled regardless of whether RANDOM_POSITION is true or not
+		//If RANDOM_POSITION is true, then the bikes will not necessarily start in the middle of the corners
+		shuffleBikes(bikes); 
 		
 		if(!RANDOM_POSITION) {
 			//remember that Location is in the form of (row, col), not (x, y)!
@@ -151,7 +155,7 @@ public class TronRunner{
 			
 			double placeDir = 0.0;
 			for(int i = 0; i < bikes.length; i ++){
-				if (i >= 4){break;}
+				if (i >= 4){break;}  //We can't do ordered position for more than 4 bikes
 				Bike b = bikes[i];
 				b.setDirection(180 + (i / 2) * 180);
 				world.add(new Location(curRow, curCol), b);
@@ -161,7 +165,6 @@ public class TronRunner{
 			}
 		} else {
 			for(int i = 0; i < bikes.length; i ++){
-				if (i >= 4){break;}
 				world.add(bikes[i]);
 			}
 		}

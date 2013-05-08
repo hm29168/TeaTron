@@ -3,12 +3,12 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
-import java.awt.FlowLayout;
 
 import javax.swing.JFrame;
 
 import world.TronWorld;
 
+@SuppressWarnings("serial")
 public class TronFrame extends JFrame{
 	private TronRunner runner;
 	private DisplayPanel display;
@@ -33,7 +33,7 @@ public class TronFrame extends JFrame{
         
         //create the display (visual) and control (button) panels
         display = new DisplayPanel(runner.getWorld(), cellSize);
-        control = new ControlPanel(display, runner, runSpeed);
+        control = new ControlPanel(runner, runSpeed);
         
         container.add(display, BorderLayout.CENTER);
         container.add(control, BorderLayout.PAGE_END);

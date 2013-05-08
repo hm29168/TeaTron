@@ -2,25 +2,18 @@ package gui;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import world.TronWorld;
-
+@SuppressWarnings("serial")
 public class ControlPanel extends JPanel {
 	private TronRunner runner;
-	private DisplayPanel display;
-	private Timer timer;
 	
 	private int delay;
 	
-	public ControlPanel(DisplayPanel display, TronRunner runner, int runSpeed){
+	public ControlPanel(TronRunner runner, int runSpeed){
 		super(new FlowLayout(FlowLayout.LEADING, 4, 4));
-		this.display = display;
 		this.runner = runner;
 		delay = runSpeed;
 		
