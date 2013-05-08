@@ -1,8 +1,6 @@
 package players.architecture;
 import java.awt.Color;
 import java.awt.Image;
-import java.io.File;
-
 
 import world.TronGrid;
 

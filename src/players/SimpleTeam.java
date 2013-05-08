@@ -1,14 +1,15 @@
 package players;
 
+import java.awt.Color;
+
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 import players.architecture.*;
 
 public class SimpleTeam extends Team{
 
-	public SimpleTeam(String teamOwner) {
-		super(teamOwner);
-		// TODO Auto-generated constructor stub
+	public SimpleTeam(String teamName, String teamOwner, Color teamColor) {
+		super(teamName, teamOwner, teamColor);
 	}
 
 	@Override

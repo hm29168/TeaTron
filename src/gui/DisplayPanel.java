@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import players.architecture.CustomActor;
 import world.TronWorld;
 
+@SuppressWarnings("serial")
 public class DisplayPanel extends JPanel{
 	private TronWorld world;
 	private Dimension size;

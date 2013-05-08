@@ -1,5 +1,6 @@
 package players.architecture;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -8,42 +9,54 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import world.TronGrid;
+
 /*
  * This is where hiveminded AI is developed,
  * so each bike belongs to a Team 
  */
 public abstract class Team {
+	private final int TEAM_SIZE = 3;
 	
 	protected ArrayList<Bike> bikes;
 	
+	protected String teamName;
 	protected String teamOwner;
 	protected Image teamImage;
+	protected Color teamColor;
 	
 	private static final String GENERIC_BIKE = "/players/architecture/Bike.gif";
 	
-	public Team(String teamName){
-		this.teamOwner = teamName;
+	public Team(String teamName, String teamOwner, Color teamColor){
+		this.teamName = teamName;
+		this.teamOwner = teamOwner;
+		this.teamColor = teamColor;
 		bikes = new ArrayList<Bike>();
 		try {
 			teamImage = ImageIO.read(new File(getClass().getResource(getBikeImageString()).toURI()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	public ArrayList<Bike> generateBikes(TronGrid<CustomActor> grid) {
+		for(int i = 0; i < TEAM_SIZE ; i++) {
+			new Bike(grid,teamOwner + i, getTeamImage(), teamColor,this);
+		}
+		
+		return bikes;
+	}
+	
+	public void addBike(Bike b) {
+		bikes.add(b);
+	}
 	
 	/*
-	 * 
+	 * Override to get how each bike should move
 	 */
 	public abstract int move(Bike bike);
-	
-	public void addBike(Bike bike){
-		bikes.add(bike);
-	}
 	
 	/*
 	 * Each team can provide their own image to be displayed.
@@ -58,6 +71,6 @@ public abstract class Team {
 	}
 	
 	public String toString(){
-		return teamOwner;
+		return teamName;
 	}
 }
