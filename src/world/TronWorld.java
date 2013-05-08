@@ -67,7 +67,7 @@ public class TronWorld extends World<CustomActor>{
     		timer = new Timer();
     		TimerTask runTask = new TimerTask(){
     			public void run() {
-    				int remainingBikes = bikesLeft();
+    				int remainingBikes = getNumberBikesLeft();
     				if (remainingBikes <= 1){
     					timer.cancel();
     					if(remainingBikes == 1) awardPointToWinner();
@@ -97,7 +97,7 @@ public class TronWorld extends World<CustomActor>{
     	System.out.println(playerScores);
     }
     
-    public int bikesLeft(){
+    public int getNumberBikesLeft(){
     	int numBikes = 0;
 		
 		Grid<CustomActor> gr = getGrid();
@@ -203,6 +203,12 @@ public class TronWorld extends World<CustomActor>{
     	}
     }
     
+    public void crashBike(Bike b){
+    	Location location = b.getLocation();
+    	remove(location);
+    	put(location, new Trail(getGrid(), trailImage, b.getColor()));
+    }
+    
     public Location proposedMove(Bike b){
     	TronGrid<CustomActor> grid = getGrid();
     	Location location = grid.getLocation(b);
@@ -231,12 +237,6 @@ public class TronWorld extends World<CustomActor>{
     	remove(location);
         put(newLocation, b);
         put(location, new Trail(grid, trailImage, b.getColor()));
-    }
-    
-    public void crashBike(Bike b){
-    	Location location = b.getLocation();
-    	remove(location);
-    	put(location, new Trail(getGrid(), trailImage, b.getColor()));
     }
 
     /**

@@ -46,13 +46,4 @@ public class TronGrid<E> extends BoundedGrid<E>{
 
         return theLocations;
     }
-    
-    //This was requested by Josh?
-    public Color getColorAt(Location loc) {
-    	if(isValid(loc) && get(loc) != null) {
-    		return ((CustomActor) get(loc)).getColor(); 
-    	}
-    	
-    	return Color.WHITE;
-    }
 }

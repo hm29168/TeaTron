@@ -83,7 +83,7 @@ public abstract class CustomActor
      * @return the grid of this actor, or <code>null</code> if this actor is
      * not contained in a grid
      */
-    public final Grid<CustomActor> getGrid()
+    private final Grid<CustomActor> getGrid()
     {
         return grid;
     }

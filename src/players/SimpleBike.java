@@ -24,8 +24,7 @@ public class SimpleBike extends Bike{
 		//check left, forward, right (relative to my current direction)
 		for(int i = 0; i < 4; i ++){
 			Location newLocation = location.getAdjacentLocation(dir + (i * 90));
-			Grid<CustomActor> grid = getGrid();
-			if (grid.isValid(newLocation) && grid.get(newLocation) == null){
+			if (isEmptyLocation(newLocation)){
 				dir += (i * 90);
 				break;
 			}
