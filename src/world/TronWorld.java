@@ -27,9 +27,12 @@ public class TronWorld extends World<CustomActor>{
 	private Image trailImage;
 	private Timer timer;
 	
-	private ArrayList<Integer> totalScores = new ArrayList<Integer>();
+	private HashMap<Bike, Integer> playerScores = new HashMap<Bike, Integer>();
 	private int totalGames = 0;
     private int totalBikes;
+    
+    private final int WINNING_SCORE = 5;
+    private boolean WIN_CONDITION_MET = false;
 	
 	public TronWorld(int width, int height){
 		super(new TronGrid<CustomActor>(width, height));
@@ -42,6 +45,7 @@ public class TronWorld extends World<CustomActor>{
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+	    
 	}
 	
 	public void setTotalBikes(int totalBikes) {
@@ -55,31 +59,39 @@ public class TronWorld extends World<CustomActor>{
     
     //simulates the game until last man standing
     public void run(int runSpeed){
-    	//stop the current task
-    	if (timer != null){timer.cancel();}
-    	
-    	//make a new timer and task for it to run
-    	timer = new Timer();
-		TimerTask runTask = new TimerTask(){
-			public void run() {
-				if (bikesLeft() <= 1){
-					timer.cancel();
-					endGame();
-				}
-				else{
-					step();
-					if(frame != null){
-						frame.repaint();
-					}
-				}
-				
-			}		
-		};
-		timer.schedule(runTask, 0, runSpeed);
+    	if(!WIN_CONDITION_MET) {
+    		//stop the current task
+    		if (timer != null){timer.cancel();}
+
+    		//make a new timer and task for it to run
+    		timer = new Timer();
+    		TimerTask runTask = new TimerTask(){
+    			public void run() {
+    				int remainingBikes = bikesLeft();
+    				if (remainingBikes <= 1){
+    					timer.cancel();
+    					if(remainingBikes == 1) awardPointToWinner();
+    					endGame();
+    				}
+    				else{
+    					step();
+    					if(frame != null){
+    						frame.repaint();
+    					}
+    				}
+
+    			}		
+    		};
+    		timer.schedule(runTask, 0, runSpeed);
+    	}
     }
     
     public void endGame(){
-    	System.out.println("Game end.");
+    	if(!WIN_CONDITION_MET) System.out.println("\nGame end.");
+    	else System.out.println("\n\nTOURNAMENT END");
+    	totalGames++;
+    	System.out.println("Out of " + totalGames + " games played, the scores are: ");
+    	System.out.println(playerScores);
     }
     
     public int bikesLeft(){
@@ -94,6 +106,25 @@ public class TronWorld extends World<CustomActor>{
 		}
 		
 		return numBikes;
+    }
+    
+    public void awardPointToWinner() {
+    	Grid<CustomActor> gr = getGrid();
+    	Bike winner = null;
+    	
+		for(Location loc : gr.getOccupiedLocations()){
+			CustomActor a = gr.get(loc);
+			if (a instanceof Bike){
+				winner = (Bike) a;
+			}
+		}
+		
+		int currentScore = playerScores.get(winner) + 1;
+		if(currentScore >= WINNING_SCORE) {
+			WIN_CONDITION_MET = true;
+			System.out.println(winner + "has won!!!");
+		}
+		playerScores.put(winner, currentScore);
     }
 
     public void step() {
@@ -202,7 +233,6 @@ public class TronWorld extends World<CustomActor>{
     	Location location = b.getLocation();
     	remove(location);
     	put(location, new Trail(getGrid(), trailImage, b.getColor()));
-    	//System.out.println(b + " has crashed at step [" + curStep + "]");
     }
 
     /**
@@ -215,6 +245,7 @@ public class TronWorld extends World<CustomActor>{
         TronGrid<CustomActor> grid = getGrid();
         grid.remove(loc);
         grid.put(loc, occupant);
+    	if(!playerScores.containsKey(occupant))	playerScores.put((Bike) occupant, 0);
     }
 
     /**
@@ -252,5 +283,16 @@ public class TronWorld extends World<CustomActor>{
     public void setFrame(TronFrame frame){
     	this.frame = frame; //now that I know what the frame is
     	frame.setWorld(this); //update the frame on who I am
+    }
+    
+    public void clear() {
+    	for(Location loc : getGrid().getOccupiedLocations()) {
+    		remove(loc);
+    	}
+    	numCrashes = 0;
+    }
+    
+    public boolean hasBeenWon() {
+    	return WIN_CONDITION_MET;
     }
 }

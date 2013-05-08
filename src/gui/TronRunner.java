@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -30,6 +31,8 @@ public class TronRunner{
 	private TronWorld world;
 	private TronFrame frame;
 	
+	private ArrayList<Bike> bikes = new ArrayList<Bike>();
+	
 	//calculates a proper cell size that is a multiple
 	public static int calculateCellSize(int rows, int cols, int frameLen, int multiple){
 		//find the longer size
@@ -46,7 +49,7 @@ public class TronRunner{
 	public static void main(String[] args){
 		//create a 20 x 20 world with max window width of 600, with the individual cell size being a multiple of 2
 		TronRunner tr = new TronRunner(WORLD_SIZE, WINDOW_WIDTH, 2);
-		tr.reset();
+		tr.setup();
 	}
 	
 	//constructors
@@ -97,27 +100,20 @@ public class TronRunner{
 	}
 	
 	//a way to shuffle the bikes
-	public void shuffleBikes(Bike[] bikes){
+	public void shuffleBikes(ArrayList<Bike> bikes){
 		Random r = new Random(SEED);
 		//make 20 random swaps
 		for(int i = 0; i < 20; i ++){
-			int indexA = r.nextInt(bikes.length);
-			int indexB = r.nextInt(bikes.length);
-			Bike save = bikes[indexA];
+			int indexA = r.nextInt(bikes.size());
+			int indexB = r.nextInt(bikes.size());
+			Bike save = bikes.get(indexA);
 			
-			bikes[indexA] = bikes[indexB];
-			bikes[indexB] = save;
+			bikes.set(indexA, bikes.get(indexB));
+			bikes.set(indexB, save);
 		}
 	}
 	
-	//setup method
-	public void reset(){
-		if (!USE_SEED){
-			SEED = System.currentTimeMillis();
-		}
-		
-		System.out.println("");
-		System.out.println("Seed: " + SEED);
+	public void setup() {
 		System.out.println("Number of Cells: " + numCells);
 		System.out.println("Cell Size: " + cellSize);
 		
@@ -133,14 +129,26 @@ public class TronRunner{
 			}
 
 		//define our bikes
-		Bike[] bikes = {new ConstantBike(world.getGrid(), "ROBOT", bikeImage, Color.DARK_GRAY),
-				new SimpleBike(world.getGrid(), "Lilly", bikeImage, Color.YELLOW),
-				new RandomBike(world.getGrid(), "HUMAN", bikeImage, Color.DARK_GRAY),
-				new SimpleBike(world.getGrid(), "Sam", bikeImage, Color.BLUE),
-				new SimpleBike(world.getGrid(), "Jabari", bikeImage, Color.RED),
-				new SimpleBike(world.getGrid(), "Josh", bikeImage, Color.GREEN)};
+		bikes.add(new ConstantBike(world.getGrid(), "ROBOT", bikeImage, Color.DARK_GRAY));
+		bikes.add(new SimpleBike(world.getGrid(), "Lilly", bikeImage, Color.YELLOW));
+		bikes.add(new RandomBike(world.getGrid(), "HUMAN", bikeImage, Color.DARK_GRAY));
+		bikes.add(new SimpleBike(world.getGrid(), "Sam", bikeImage, Color.BLUE));
+		bikes.add(new SimpleBike(world.getGrid(), "Jabari", bikeImage, Color.RED));
+		bikes.add(new SimpleBike(world.getGrid(), "Josh", bikeImage, Color.GREEN));
 		
-		world.setTotalBikes(bikes.length);
+		world.setTotalBikes(bikes.size());
+		
+		reset();
+	}
+	
+	//setup method
+	public void reset(){
+		world.clear();
+		
+		if (!USE_SEED){
+			SEED = System.currentTimeMillis();
+		}
+		System.out.println("Seed: " + SEED);
 		
 		//shuffle the bikes
 		//bikes will be shuffled regardless of whether RANDOM_POSITION is true or not
@@ -154,9 +162,9 @@ public class TronRunner{
 			int placeLen = numCells - (curRow * 2) - 1;
 			
 			double placeDir = 0.0;
-			for(int i = 0; i < bikes.length; i ++){
+			for(int i = 0; i < bikes.size(); i ++){
 				if (i >= 4){break;}  //We can't do ordered position for more than 4 bikes
-				Bike b = bikes[i];
+				Bike b = bikes.get(i);
 				b.setDirection(180 + (i / 2) * 180);
 				world.add(new Location(curRow, curCol), b);
 				curRow += Math.sin(placeDir) * placeLen;
@@ -164,8 +172,8 @@ public class TronRunner{
 				placeDir += Math.PI / 2;
 			}
 		} else {
-			for(int i = 0; i < bikes.length; i ++){
-				world.add(bikes[i]);
+			for(int i = 0; i < bikes.size(); i ++){
+				world.add(bikes.get(i));
 			}
 		}
 		

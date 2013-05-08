@@ -21,7 +21,16 @@ public class ControlPanel extends JPanel {
 	}
 	
 	public void createGUI(){
-		JButton runButton, resetButton;
+		JButton runButton, resetButton, autoRunButton;
+		
+		autoRunButton = new JButton(new AbstractAction("AutoRun"){
+			public void actionPerformed(ActionEvent e) {
+				while(!runner.getWorld().hasBeenWon()) {
+					runner.getWorld().run(delay);
+					runner.reset();
+				}
+			}
+		});
 		
 		//creates a timer that continuously calls the step() method of the world after a certain delay (runSpeed)
 		runButton = new JButton(new AbstractAction("Run"){
@@ -38,6 +47,7 @@ public class ControlPanel extends JPanel {
 		
 		
 		//add em onto the control panel (this)
+		add(autoRunButton);
 		add(runButton);
 		add(resetButton);
 		
