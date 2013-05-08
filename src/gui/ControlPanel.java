@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -25,9 +26,18 @@ public class ControlPanel extends JPanel {
 		
 		autoRunButton = new JButton(new AbstractAction("AutoRun"){
 			public void actionPerformed(ActionEvent e) {
+				boolean hasBeenReset = true;
+				
 				while(!runner.getWorld().hasBeenWon()) {
-					runner.getWorld().run(delay);
-					runner.reset();
+					if(hasBeenReset && !runner.getWorld().isGameDone()) {
+						runner.getWorld().run(1); //very small amount of delay
+						hasBeenReset = false;
+					} 
+					
+					if(runner.getWorld().isGameDone() && !hasBeenReset ) {
+						runner.reset();
+						hasBeenReset = true;
+					}
 				}
 			}
 		});

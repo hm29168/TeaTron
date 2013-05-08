@@ -4,7 +4,6 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -33,6 +32,7 @@ public class TronWorld extends World<CustomActor>{
     
     private final int WINNING_SCORE = 5;
     private boolean WIN_CONDITION_MET = false;
+    private boolean GAME_CONDITION_MET = false;
 	
 	public TronWorld(int width, int height){
 		super(new TronGrid<CustomActor>(width, height));
@@ -88,7 +88,10 @@ public class TronWorld extends World<CustomActor>{
     
     public void endGame(){
     	if(!WIN_CONDITION_MET) System.out.println("\nGame end.");
-    	else System.out.println("\n\nTOURNAMENT END");
+    	else System.out.println("\nTOURNAMENT END");
+    	
+		GAME_CONDITION_MET = true;
+    	
     	totalGames++;
     	System.out.println("Out of " + totalGames + " games played, the scores are: ");
     	System.out.println(playerScores);
@@ -122,12 +125,13 @@ public class TronWorld extends World<CustomActor>{
 		int currentScore = playerScores.get(winner) + 1;
 		if(currentScore >= WINNING_SCORE) {
 			WIN_CONDITION_MET = true;
-			System.out.println(winner + "has won!!!");
+			System.out.println("\n\n" + winner + "has won!!!");
 		}
 		playerScores.put(winner, currentScore);
     }
 
     public void step() {
+    	GAME_CONDITION_MET = false;
         Grid<CustomActor> gr = getGrid();
         LinkedList<CustomActor> actors = new LinkedList<CustomActor>();
         LinkedList<Bike> bikes = new LinkedList<Bike>();
@@ -290,9 +294,14 @@ public class TronWorld extends World<CustomActor>{
     		remove(loc);
     	}
     	numCrashes = 0;
+    	GAME_CONDITION_MET = false;
     }
     
     public boolean hasBeenWon() {
     	return WIN_CONDITION_MET;
+    }
+    
+    public boolean isGameDone() {
+    	return GAME_CONDITION_MET;
     }
 }

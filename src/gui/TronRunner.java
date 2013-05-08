@@ -24,7 +24,7 @@ public class TronRunner{
 	static final boolean USE_SEED = false; //whether or not to use a custom seed
 	static long SEED; //controls the setup, not how each Bike runs
 	
-	static int WORLD_SIZE = 20; //Side length of square world
+	static int WORLD_SIZE = 10; //Side length of square world
 	static int WINDOW_WIDTH = 600;
 	
 	private int numCells, cellSize;
