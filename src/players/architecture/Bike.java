@@ -85,6 +85,14 @@ public abstract class Bike extends CustomActor{
     	
     	return 0;
     }
+    
+    protected final int getGridRows(){
+    	return grid.getNumRows();
+    }
+    
+    protected final int getGridCols(){
+    	return grid.getNumCols();
+    }
 	
     //renders
 	public String toString(){
