@@ -13,6 +13,9 @@ public class ConstantBike extends Bike{
 	public ConstantBike(TronGrid<CustomActor> gr, String name, Image image, Color color) {
 		super(gr, name, image, color);
 	}
+	
+	public void setup(){
+	}
 
 	@Override
 	public int move() {

@@ -20,6 +20,9 @@ public abstract class Bike extends CustomActor{
 		setColor(color);
 	}
 	
+	//override this function for initial setup every round
+	public abstract void setup();
+	
 	//override this function for movement
 	public abstract int move();
 	

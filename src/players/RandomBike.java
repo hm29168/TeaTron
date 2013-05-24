@@ -15,6 +15,9 @@ public class RandomBike extends Bike {
 		super(gr, name, image, color);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public void setup(){
+	}
 
 	@Override
 	public int move() {

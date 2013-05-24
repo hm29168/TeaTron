@@ -18,13 +18,13 @@ import world.TronWorld;
 
 public class TronRunner{
 	static final int RUN_SPEED = 100; //run-time delay in milliseconds
-	static final boolean RANDOM_POSITION = true;
+	static final boolean RANDOM_POSITION = false;
 	static final boolean CUSTOM_RENDER = true;
 	
 	static final boolean USE_SEED = false; //whether or not to use a custom seed
 	static long SEED; //controls the setup, not how each Bike runs
 	
-	static int WORLD_SIZE = 10; //Side length of square world
+	static int WORLD_SIZE = 30; //Side length of square world
 	static int WINDOW_WIDTH = 600;
 	
 	private int numCells, cellSize;
@@ -129,9 +129,7 @@ public class TronRunner{
 			}
 
 		//define our bikes
-		bikes.add(new ConstantBike(world.getGrid(), "ROBOT", bikeImage, Color.DARK_GRAY));
-		bikes.add(new SimpleBike(world.getGrid(), "Lilly", bikeImage, Color.YELLOW));
-		bikes.add(new RandomBike(world.getGrid(), "HUMAN", bikeImage, Color.DARK_GRAY));
+		bikes.add(new BestBike(world.getGrid(), "Besty", bikeImage, Color.YELLOW));
 		bikes.add(new SimpleBike(world.getGrid(), "Sam", bikeImage, Color.BLUE));
 		bikes.add(new SimpleBike(world.getGrid(), "Jabari", bikeImage, Color.RED));
 		bikes.add(new SimpleBike(world.getGrid(), "Josh", bikeImage, Color.GREEN));
@@ -153,7 +151,11 @@ public class TronRunner{
 		//shuffle the bikes
 		//bikes will be shuffled regardless of whether RANDOM_POSITION is true or not
 		//If RANDOM_POSITION is true, then the bikes will not necessarily start in the middle of the corners
-		shuffleBikes(bikes); 
+		shuffleBikes(bikes);
+		
+		for(Bike b : bikes){
+			b.setup();
+		}
 		
 		if(!RANDOM_POSITION) {
 			//remember that Location is in the form of (row, col), not (x, y)!
